@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="最近遇到一个需求,一行单元格展示3个item,期间会穿插banner样式单元格,类似下图: 起初是想用UITableView来实现,但是需要定制展示3个item的cell,比较麻烦,因为后台给的数据就是一个装有各个item的数组,这样还得自己去把数据分组,反正比较麻烦,最后选择了用UICollectionView来实现,但是这样也是需要定制2种样式的item.我们知道tableview定制并且展示">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UICollectionView多cell样式布局">
+<meta property="og:url" content="http://yoursite.com/2017/04/24/UICollectionView多cell样式布局/index.html">
+<meta property="og:site_name" content="calmakon的学习笔记">
+<meta property="og:description" content="最近遇到一个需求,一行单元格展示3个item,期间会穿插banner样式单元格,类似下图: 起初是想用UITableView来实现,但是需要定制展示3个item的cell,比较麻烦,因为后台给的数据就是一个装有各个item的数组,这样还得自己去把数据分组,反正比较麻烦,最后选择了用UICollectionView来实现,但是这样也是需要定制2种样式的item.我们知道tableview定制并且展示">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1350326-34adc505758dc56b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1350326-51c460d9fc93cc52.gif?imageMogr2/auto-orient/strip">
+<meta property="og:updated_time" content="2017-12-29T08:50:34.367Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="UICollectionView多cell样式布局">
+<meta name="twitter:description" content="最近遇到一个需求,一行单元格展示3个item,期间会穿插banner样式单元格,类似下图: 起初是想用UITableView来实现,但是需要定制展示3个item的cell,比较麻烦,因为后台给的数据就是一个装有各个item的数组,这样还得自己去把数据分组,反正比较麻烦,最后选择了用UICollectionView来实现,但是这样也是需要定制2种样式的item.我们知道tableview定制并且展示">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1350326-34adc505758dc56b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/04/24/UICollectionView多cell样式布局/"/>
+
+
+
+
+
+  <title>UICollectionView多cell样式布局 | calmakon的学习笔记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2313ade6a196d598d7650d8813edcd54";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">calmakon的学习笔记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/24/UICollectionView多cell样式布局/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="calmakon">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="calmakon的学习笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">UICollectionView多cell样式布局</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-24T19:51:56+08:00">
+                2017-04-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/04/24/UICollectionView多cell样式布局/" class="leancloud_visitors" data-flag-title="UICollectionView多cell样式布局">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近遇到一个需求,一行单元格展示3个item,期间会穿插banner样式单元格,类似下图:</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1350326-34adc505758dc56b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="cape_01@2x.png"><br>起初是想用UITableView来实现,但是需要定制展示3个item的cell,比较麻烦,因为后台给的数据就是一个装有各个item的数组,这样还得自己去把数据分组,反正比较麻烦,最后选择了用UICollectionView来实现,但是这样也是需要定制2种样式的item.我们知道tableview定制并且展示多种不同样式的cell是比较容易的, UICollectionView就有点不容易了.经过一番研究,找到解决方案,先记录如下,以备不时之需.</p>
+<p>1.继承UICollectionViewFlowLayout定制一个布局类,重写几个核心方法<br>a.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">override func prepare()</span><br></pre></td></tr></table></figure></p>
+<p>b.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">override var collectionViewContentSize: CGSize</span><br></pre></td></tr></table></figure></p>
+<p>c.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">override func layoutAttributesForItem(at indexPath: IndexPath) -&gt; UICollectionViewLayoutAttributes?</span><br></pre></td></tr></table></figure></p>
+<p>d.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">override func layoutAttributesForElements(in rect: CGRect) -&gt; [UICollectionViewLayoutAttributes]?</span><br></pre></td></tr></table></figure></p>
+<p>有头视图的再加个这个方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">override func layoutAttributesForSupplementaryView(ofKind elementKind: String, at indexPath: IndexPath) -&gt; UICollectionViewLayoutAttributes?</span><br></pre></td></tr></table></figure></p>
+<p>代码如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">import UIKit</span><br><span class="line"></span><br><span class="line">let twoCellWidth: CGFloat = (UIScreen.main.bounds.width - 15 * 4) / 3</span><br><span class="line">let twoCellHeight: CGFloat = twoCellWidth * 1.2</span><br><span class="line"></span><br><span class="line">let oneCellWidth: CGFloat = UIScreen.main.bounds.width</span><br><span class="line">let oneCellHeight: CGFloat = oneCellWidth * 0.5</span><br><span class="line"></span><br><span class="line">let headerWidth: CGFloat = UIScreen.main.bounds.width</span><br><span class="line">let headerHeight: CGFloat = 190</span><br><span class="line"></span><br><span class="line">protocol CustomLayoutDataSource: NSObjectProtocol &#123;</span><br><span class="line">    func treasureLayoutEachFrameForItemAtIndexPath(layout: CustomLayout,indexPath: IndexPath) -&gt; CGRect</span><br><span class="line">    func collectionViewContentSize(layout: CustomLayout) -&gt; CGSize</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class CustomLayout: UICollectionViewFlowLayout &#123;</span><br><span class="line"></span><br><span class="line">    weak var dataSource: CustomLayoutDataSource?</span><br><span class="line"></span><br><span class="line">    override func prepare() &#123;</span><br><span class="line">        super.prepare()</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    override var collectionViewContentSize: CGSize &#123;</span><br><span class="line">        get&#123;</span><br><span class="line">            return dataSource?.collectionViewContentSize(layout: self) ?? CGSize.zero</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    override func layoutAttributesForItem(at indexPath: IndexPath) -&gt; UICollectionViewLayoutAttributes? &#123;</span><br><span class="line">        let attr = UICollectionViewLayoutAttributes.init(forCellWith: indexPath)</span><br><span class="line">        attr.frame = dataSource?.treasureLayoutEachFrameForItemAtIndexPath(layout: self, indexPath: indexPath) ?? CGRect.zero</span><br><span class="line">        return attr</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    override func layoutAttributesForElements(in rect: CGRect) -&gt; [UICollectionViewLayoutAttributes]? &#123;</span><br><span class="line">        var attrs = [UICollectionViewLayoutAttributes]()</span><br><span class="line">        </span><br><span class="line">        for j in 0..&lt;(collectionView?.numberOfSections)! &#123;</span><br><span class="line">            </span><br><span class="line">            let indexPath: IndexPath = IndexPath(item: 0, section: j)</span><br><span class="line">            </span><br><span class="line">            attrs.append(layoutAttributesForSupplementaryView(ofKind: UICollectionElementKindSectionHeader, at: indexPath)!)</span><br><span class="line">            </span><br><span class="line">            for i in 0..&lt;(collectionView?.numberOfItems(inSection: j))! &#123;</span><br><span class="line">                let indexPath = IndexPath(item: i, section: j)</span><br><span class="line">                attrs.append(layoutAttributesForItem(at: indexPath)!)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return attrs</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    override func layoutAttributesForSupplementaryView(ofKind elementKind: String, at indexPath: IndexPath) -&gt; UICollectionViewLayoutAttributes? &#123;</span><br><span class="line">        if elementKind == UICollectionElementKindSectionHeader &#123;</span><br><span class="line">            let attr = UICollectionViewLayoutAttributes.init(forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, with: indexPath)</span><br><span class="line">            attr.frame = CGRect(x: 0,y: 0,width: headerWidth,height: headerHeight)</span><br><span class="line">            return attr</span><br><span class="line">        &#125;</span><br><span class="line">        return nil</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>定义一个数据源代理方法CustomLayoutDataSource</p>
+<p>2.viewControllor初始化视图,注册item样式,头视图<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">let layout = CustomLayout()</span><br><span class="line">        layout.dataSource = self</span><br><span class="line">        layout.minimumLineSpacing = 15</span><br><span class="line">        layout.minimumInteritemSpacing = 15</span><br><span class="line">        </span><br><span class="line">        collectionView = UICollectionView.init(frame: self.view.bounds, collectionViewLayout: layout)</span><br><span class="line">        collectionView.backgroundColor = UIColor.lightGray</span><br><span class="line">        collectionView.dataSource = self</span><br><span class="line">        collectionView.delegate = self</span><br><span class="line">        view.addSubview(collectionView)</span><br><span class="line">        </span><br><span class="line">        collectionView.register(CustomTwoCell.self, forCellWithReuseIdentifier: &quot;twoCell&quot;)</span><br><span class="line">        collectionView.register(CustomOneCell.self, forCellWithReuseIdentifier: &quot;oneCell&quot;)</span><br><span class="line">        collectionView.register(HeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: &quot;header&quot;)</span><br></pre></td></tr></table></figure></p>
+<p>3.实现相应的代理方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br></pre></td><td class="code"><pre><span class="line">func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -&gt; Int &#123;</span><br><span class="line">        return dataArray.count</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -&gt; UICollectionReusableView &#123;</span><br><span class="line">        </span><br><span class="line">        if kind == UICollectionElementKindSectionHeader &#123;</span><br><span class="line">            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: &quot;header&quot;, for: indexPath) as! HeaderView</span><br><span class="line">            headerView.backgroundColor = UIColor.yellow</span><br><span class="line">            return headerView</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        return UICollectionReusableView()</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -&gt; UICollectionViewCell &#123;</span><br><span class="line">        var cell: UICollectionViewCell</span><br><span class="line">        </span><br><span class="line">        let dataDic: NSDictionary = dataArray[indexPath.row] </span><br><span class="line">        let type = dataDic[&quot;type&quot;] as! Int</span><br><span class="line">        if type == 2 &#123;</span><br><span class="line">           cell = collectionView.dequeueReusableCell(withReuseIdentifier: &quot;twoCell&quot;, for: indexPath) as! CustomTwoCell</span><br><span class="line">           cell.backgroundColor = UIColor.green</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">           cell = collectionView.dequeueReusableCell(withReuseIdentifier: &quot;oneCell&quot;, for: indexPath) as! CustomOneCell</span><br><span class="line">            cell.backgroundColor = UIColor.red</span><br><span class="line">        &#125;</span><br><span class="line">        return cell</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    func collectionViewContentSize(layout: CustomLayout) -&gt; CGSize &#123;</span><br><span class="line">        var twoCellCount: Int = 0</span><br><span class="line">        var oneCellCount: Int = 0</span><br><span class="line">        </span><br><span class="line">        for (_,dic) in dataArray.enumerated() &#123;</span><br><span class="line">            let type: Int = dic[&quot;type&quot;] as! Int</span><br><span class="line">            if type == 2&#123;</span><br><span class="line">                twoCellCount += 1</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                oneCellCount += 1</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        var headerheight: CGFloat = 0</span><br><span class="line"></span><br><span class="line">        headerheight = headerHeight + layout.minimumLineSpacing</span><br><span class="line">        </span><br><span class="line">        let twoCellHeightT: CGFloat = CGFloat(ceilf((Float(Float(twoCellCount) / 3)))) * twoCellHeight</span><br><span class="line">        let oneCellHeightT: CGFloat = CGFloat(oneCellCount) * oneCellHeight</span><br><span class="line">        let paddingHeightT: CGFloat = CGFloat(ceilf((Float(Float(twoCellCount) / 3))) + Float(oneCellCount)) * layout.minimumLineSpacing</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        let size = CGSize(width: view.bounds.width, height: twoCellHeightT + oneCellHeightT + paddingHeightT + headerheight)</span><br><span class="line">        </span><br><span class="line">        return size</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    func treasureLayoutEachFrameForItemAtIndexPath(layout: CustomLayout, indexPath: IndexPath) -&gt; CGRect &#123;</span><br><span class="line">        var twoCellCount: Int = 0</span><br><span class="line">        var oneCellCount: Int = 0</span><br><span class="line">        var cellType: Int?</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        for (index, dic) in dataArray.enumerated() &#123;</span><br><span class="line">            let type = dic[&quot;type&quot;] as? Int</span><br><span class="line">            if indexPath.item == index &#123;</span><br><span class="line">                cellType = type</span><br><span class="line">                break</span><br><span class="line">            &#125;else if type == 2 &#123;</span><br><span class="line">                twoCellCount += 1</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                oneCellCount += 1</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        var x: CGFloat = 15</span><br><span class="line">        var y: CGFloat = 0</span><br><span class="line">        var width: CGFloat = 0</span><br><span class="line">        var height: CGFloat = 0</span><br><span class="line">        </span><br><span class="line">        let twoCellHeightT: CGFloat = CGFloat((twoCellCount / 3)) * twoCellHeight</span><br><span class="line">        let oneCellHeightT: CGFloat = CGFloat(oneCellCount) * oneCellHeight</span><br><span class="line">        let paddingHeightT: CGFloat = CGFloat((twoCellCount / 3) + oneCellCount) * layout.minimumLineSpacing</span><br><span class="line">        </span><br><span class="line">        y = headerHeight + layout.minimumLineSpacing</span><br><span class="line">        </span><br><span class="line">        if cellType == 2 &#123;</span><br><span class="line">            width = twoCellWidth</span><br><span class="line">            height = twoCellHeight</span><br><span class="line">            </span><br><span class="line">            if !(isCellOnLeftByTreasure(treasure: twoCellCount, oneCount: oneCellCount)) &#123;</span><br><span class="line">                x = (width + layout.minimumInteritemSpacing) * CGFloat(indexCount) + layout.minimumInteritemSpacing;</span><br><span class="line">            &#125;</span><br><span class="line">            y += (twoCellHeightT + oneCellHeightT + paddingHeightT)</span><br><span class="line">            </span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            x = 0</span><br><span class="line">            width = oneCellWidth</span><br><span class="line">            height = oneCellHeight</span><br><span class="line">            </span><br><span class="line">            y += (twoCellHeightT + oneCellHeightT + paddingHeightT)</span><br><span class="line">        &#125;</span><br><span class="line">        return CGRect(x: x,y: y,width: width,height: height)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    func isCellOnLeftByTreasure(treasure: Int,oneCount: Int) -&gt; Bool &#123;</span><br><span class="line">        if (treasure + oneCount * 3) % 3 == 0 &#123;</span><br><span class="line">            indexCount = 0</span><br><span class="line">            return true;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            indexCount += 1</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>主要是在布局类的代理方法里计算坐标,高度,如代码所示</p>
+<p>最后看下效果图:</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1350326-51c460d9fc93cc52.gif?imageMogr2/auto-orient/strip" alt="多cell样式.gif"><br>黄色是头视图,红色是banner样式的item,绿色是一行多个数据的item样式,抽空把代码放在github上,恩恩.</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/01/仿哔哩哔哩动画iOS端/" rel="next" title="仿哔哩哔哩动画iOS端">
+                <i class="fa fa-chevron-left"></i> 仿哔哩哔哩动画iOS端
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/17/WeexSDK-升级到0-16-2版本遇到的坑/" rel="prev" title="WeexSDK 升级到0.16.2版本遇到的坑">
+                WeexSDK 升级到0.16.2版本遇到的坑 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.gif"
+                alt="calmakon" />
+            
+              <p class="site-author-name" itemprop="name">calmakon</p>
+              <p class="site-description motion-element" itemprop="description">这里是我的学习笔记、也有日常、吐槽等，哈哈。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/calmakon" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">calmakon</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three-waves.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("SvOjBIs5HKmNBSQ8EUzj3Rj1-gzGzoHsz", "onNn0GroaGHjIPX6pBM7M3mm");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
